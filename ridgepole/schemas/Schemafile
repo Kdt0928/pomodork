@@ -1,0 +1,39 @@
+# encoding: utf-8
+
+create_table "user_accounts", primary_key: [:user_id], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ユーザアカウント" do |t|
+    t.string   "user_id",          limit: 12,    default: "", null: false, comment: "ユーザID"
+    t.string   "mail_address",     limit: 200,   default: "", null: true,  comment: "メールアドレス"
+    t.string   "password",         limit: 200,   default: "", null: true,  comment: "パスワード"
+    t.string   "account_name",     limit: 150,   default: "", null: true,  comment: "アカウント名"
+    t.string   "link_twitter_id",  limit: 200,   default: "", null: true,  comment: "Twitter連携ID"
+    t.datetime "last_update_date",                            null: true,  comment: "最終更新日時"
+    t.string   "last_update_user", limit: 100,   default: "", null: true,  comment: "最終更新者"
+    # t.index    ["user_id"],        name: "user_accounts_pk",  unique: true
+    t.index    ["mail_address"],   name: "user_accounts_idx_1"
+end
+
+create_table "link_twitter", primary_key: [:link_twitter_id], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "Twitter連携" do |t|
+    t.string   "link_twitter_id",   limit: 12,    default: "", null: false, comment: "Twitter連携ID"
+    t.string   "access_token",      limit: 500,   default: "", null: true,  comment: "アクセストークン"
+    # t.index    ["link_twitter_id"], name: "link_twitter_pk",  unique: true
+end
+
+create_table "user_tasks", primary_key: [:user_id, :schedule_date], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ユーザタスク" do |t|
+    t.string   "user_id",       limit: 12, default: "", null: false, comment: "ユーザID"
+    t.date     "schedule_date",                         null: false, comment: "予定日"
+    t.string   "task_id",       limit: 12, default: "", null: true,  comment: "タスクID"
+    # t.index    ["user_id", "schedule_date"], name: "user_tasks_pk",  unique: true
+end
+
+create_table "pomodoro_tasks", primary_key: [:user_id, :task_id], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ポロモードタスク" do |t|
+    t.string  "user_id",                 limit: 12,  default: "", null: false, comment: "ユーザID"
+    t.string  "task_id",                 limit: 12,  default: "", null: false, comment: "タスクID"
+    t.string  "delete_flag",             limit: 1,   default: "", null: true,  comment: "削除フラグ"
+    t.text    "task_name",                                        null: true,  comment: "タスク名"
+    t.integer "pomodoro_num",            limit: 2,   default: "", null: true,  comment: "ポロモード数"
+    t.float   "completion_pomodoro_num", limit: 2.2, default: "", null: true,  comment: "完了ポロモード数"
+    t.date    "completion_date",                     default: "", null: true,  comment: "完了日"
+    t.text    "memo",                                             null: true,  comment: "メモ"
+    # t.index   ["user_id", "task_id"], name: "pomodoro_tasks_pk",  unique: true
+    t.index   ["completion_date"],    name: "pomodoro_tasks_idx_1"
+end
