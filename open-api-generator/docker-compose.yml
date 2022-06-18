@@ -1,0 +1,10 @@
+# versionは3系が最新版で、versionによって書き方が異なる
+version: "3"
+services:
+  openapi-generator-server:
+    image: openapitools/openapi-generator-cli
+    working_dir: /usr/local/openapi/
+    volumes:
+      - ./:/usr/local/openapi/
+    command: generate -g python -i ./openapi.yml -o ./client
+    # command: generate -g go-gin-server -i ./openapi.yml -o ./server

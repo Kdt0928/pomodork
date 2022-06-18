@@ -1,0 +1,5 @@
+# open-api-generatorのsever/clientフォルダは残す
+open-api-generator/server/*
+open-api-generator/client/*
+!open-api-generator/server/.gitkeep
+!open-api-generator/client/.gitkeep

@@ -1,0 +1,527 @@
+swagger: '2.0'
+info:
+  description: POMODORKのバックエンドAPI
+  version: 1.0.0
+  title: POMODORK Backend API
+host: pomodork.backend.com
+basePath: /v2
+tags:
+  - name: user
+    description: ユーザに関するAPI
+  - name: account
+    description: アカウントに関するAPI
+  - name: twitter
+    description: Twitter連携に関するAPI
+  - name: task
+    description: タスクに関するAPI
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: ユーザ登録
+      description: ユーザ登録API
+      responses:
+        '200':
+          description: ユーザ登録成功
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: MU99999999
+    get:
+      tags:
+        - user
+      summary: ユーザ取得
+      description: ユーザ取得API
+      operationId: userSearchForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ユーザ取得成功
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - user
+      summary: ユーザ削除
+      description: ユーザ削除API
+      operationId: userDeleteForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ユーザ削除成功
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: MU99999999
+  /account:
+    put:
+      tags:
+        - account
+      summary: アカウント更新
+      operationId: updateAccountForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+        - name: mail_address
+          in: formData
+          description: メールアドレス
+          required: true
+          type: string
+        - name: password
+          in: formData
+          description: パスワード
+          required: true
+          type: string
+        - name: account_name
+          in: formData
+          description: アカウント名
+          required: false
+          type: string
+      responses:
+        '200':
+          description: アカウント更新成功
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: MU99999999
+    get:
+      tags:
+        - account
+      summary: アカウント取得
+      description: アカウント取得API
+      operationId: accountSearchForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: mail_address
+          in: formData
+          description: メールアドレス
+          required: true
+          type: string
+      responses:
+        '200':
+          description: アカウント取得成功
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          description: account not found
+
+  /twitter/link:
+    post:
+      tags:
+        - twitter
+      summary: Twitter連携登録
+      description: Twitter連携登録API
+      operationId: registTwitterLinkForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+        - name: access_token
+          in: formData
+          description: Twitterのアクセストークン
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Twitter連携登録成功
+          schema:
+            $ref: '#/definitions/TwitterLink'
+    delete:
+      tags:
+        - twitter
+      summary: Twitter連携削除
+      description: Twitter連携削除API
+      operationId: deleteTwitterLinkForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+        - name: link_twitter_id
+          in: formData
+          description: Twitter連携ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Twitter連携削除成功
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: MU99999999
+  /task:
+    post:
+      tags:
+        - task
+      summary: タスク登録
+      description: タスク登録API
+      operationId: registTaskForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+        - name: schedule_date
+          in: formData
+          description: 予定日
+          required: false
+          type: string
+          format: YYYY/MM/DD
+        - name: task_name
+          in: formData
+          description: タスク名
+          required: false
+          type: string
+        - name: pomodoro_num
+          in: formData
+          description: ポロモード数
+          required: false
+          type: integer
+          format: int32
+        - name: pomodoro_time
+          in: formData
+          description: ポロモード時間
+          required: false
+          type: integer
+          format: int32
+        - name: memo
+          in: formData
+          description: メモ
+          required: false
+          type: string
+      responses:
+        '200':
+          description: タスク登録成功
+          schema:
+            $ref: '#/definitions/Task'
+    put:
+      tags:
+        - task
+      summary: タスク更新
+      description: タスク更新API
+      operationId: updateTaskForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+        - name: task_id
+          in: formData
+          description: タスクID
+          required: true
+          type: string
+        - name: schedule_date
+          in: formData
+          description: 予定日
+          required: false
+          type: string
+          format: YYYY/MM/DD
+        - name: delete_flag
+          in: formData
+          description: 削除フラグ
+          required: false
+          type: string
+          enum:
+            - '0'
+            - '1'
+        - name: task_name
+          in: formData
+          description: タスク名
+          required: false
+          type: string
+        - name: pomodoro_num
+          in: formData
+          description: ポロモード数
+          required: false
+          type: integer
+          format: int32
+        - name: pomodoro_time
+          in: formData
+          description: ポロモード時間
+          required: false
+          type: integer
+          format: int32
+        - name: completion_pomodoro_num
+          in: formData
+          description: 完了ポロモード数
+          required: false
+          type: integer
+          format: flooat32
+        - name: completion_date
+          in: formData
+          description: 完了日
+          required: false
+          type: string
+          format: YYYY/MM/DD
+        - name: memo
+          in: formData
+          description: メモ
+          required: false
+          type: string
+      responses:
+        '200':
+          description: タスク更新成功
+          schema:
+            $ref: '#/definitions/Task'
+  /tasks/schedule:
+    get:
+      tags:
+        - task
+      summary: 予定日タスク取得
+      description: 予定日タスク取得API
+      operationId: serachTaskScheduleForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: schedule_date
+          in: formData
+          description: 予定日
+          required: true
+          type: string
+          format: YYYY/MM/DD
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+        - name: task_id
+          in: formData
+          description: タスクID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 予定日タスク取得成功
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: MU99999999
+              schedule_date:
+                type: string
+                example: 2022/06/30
+              tasks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    task_id:
+                      type: string
+                      example: PT99999999
+                    task_name:
+                      type: string
+                      example: pomodork
+                    pomodoro_num:
+                      type: integer
+                      format: int32
+                      example: '99'
+                    pomodoro_time:
+                      type: integer
+                      format: int32
+                      example: '60'
+                    completion_pomodoro_num:
+                      type: integer
+                      format: flooat32
+                      example: '2.5'
+                    completion_date:
+                      type: string
+                      example: 2022/06/30
+                    memo:
+                      type: string
+                      example: pomodork
+  /tasks/actual:
+    get:
+      tags:
+        - task
+      summary: 実績タスク取得
+      description: 実績タスク取得API
+      operationId: serachTaskActualForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: month
+          in: formData
+          description: 実績年月
+          required: true
+          type: string
+          format: YYYY/MM
+        - name: user_id
+          in: formData
+          description: ユーザID
+          required: true
+          type: string
+        - name: task_id
+          in: formData
+          description: タスクID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: タスク取得成功
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                example: MU99999999
+              tasks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    schedule_date:
+                      type: string
+                      example: 2022/06/30
+                    task_id:
+                      type: string
+                      example: PT99999999
+                    task_name:
+                      type: string
+                      example: pomodork
+                    pomodoro_num:
+                      type: integer
+                      format: int32
+                      example: '99'
+                    pomodoro_time:
+                      type: integer
+                      format: int32
+                      example: '60'
+                    completion_pomodoro_num:
+                      type: integer
+                      format: flooat32
+                      example: '2.5'
+                    completion_date:
+                      type: string
+                      example: 2022/06/30
+                    memo:
+                      type: string
+                      example: pomodork
+definitions:
+  User:
+    type: object
+    properties:
+      user_id:
+        type: string
+        example: MU99999999
+      mail_address:
+        type: string
+        example: pomodork@pomodork.com
+      password:
+        type: string
+        example: XXXXXXX
+      account_name:
+        type: string
+        example: pomodork
+      link_twitter_id:
+        type: string
+        example: LT99999999
+  TwitterLink:
+    type: object
+    properties:
+      user_id:
+        type: string
+        example: MU99999999
+      link_twitter_id:
+        type: string
+        example: LT99999999
+  Task:
+    type: object
+    properties:
+      user_id:
+        type: string
+        example: MU99999999
+      schedule_date:
+        type: string
+        example: 2022/06/30
+      task_id:
+        type: string
+        example: PT99999999
+      delete_flag:
+        type: string
+        example: '0'
+      task_name:
+        type: string
+        example: pomodork
+      pomodoro_num:
+        type: integer
+        format: int32
+        example: '99'
+      pomodoro_time:
+        type: integer
+        format: int32
+        example: '60'
+      completion_pomodoro_num:
+        type: integer
+        format: flooat32
+        example: '2.5'
+      completion_date:
+        type: string
+        example: 2022/06/30
+      memo:
+        type: string
+        example: pomodork
