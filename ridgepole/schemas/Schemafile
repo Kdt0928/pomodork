@@ -25,13 +25,13 @@ create_table "user_tasks", primary_key: [:user_id, :schedule_date], force: :casc
     # t.index    ["user_id", "schedule_date"], name: "user_tasks_pk",  unique: true
 end
 
-create_table "pomodoro_tasks", primary_key: [:user_id, :task_id], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ポロモードタスク" do |t|
+create_table "pomodoro_tasks", primary_key: [:user_id, :task_id], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ポモドーロタスク" do |t|
     t.string  "user_id",                 limit: 12,  default: "", null: false, comment: "ユーザID"
     t.string  "task_id",                 limit: 12,  default: "", null: false, comment: "タスクID"
     t.string  "delete_flag",             limit: 1,   default: "", null: true,  comment: "削除フラグ"
     t.text    "task_name",                                        null: true,  comment: "タスク名"
-    t.integer "pomodoro_num",            limit: 2,   default: "", null: true,  comment: "ポロモード数"
-    t.float   "completion_pomodoro_num", limit: 2.2, default: "", null: true,  comment: "完了ポロモード数"
+    t.integer "pomodoro_num",            limit: 2,   default: "", null: true,  comment: "ポモドーロ数"
+    t.float   "completion_pomodoro_num", limit: 2.2, default: "", null: true,  comment: "完了ポモドーロ数"
     t.date    "completion_date",                     default: "", null: true,  comment: "完了日"
     t.text    "memo",                                             null: true,  comment: "メモ"
     # t.index   ["user_id", "task_id"], name: "pomodoro_tasks_pk",  unique: true
