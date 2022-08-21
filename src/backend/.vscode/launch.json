@@ -21,6 +21,7 @@
                 "MAX_OPEN_CONNECTION": "10",
                 "MAX_IDLE_CONNECTION": "10",
                 "MAX_LIFE_TIME": "60",
+                "DEBUG_MODE": "1",
             },
             "args": []
         }

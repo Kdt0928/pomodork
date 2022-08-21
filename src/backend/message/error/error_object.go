@@ -2,7 +2,9 @@ package error
 
 import "fmt"
 
-// EnvNotFoundError 環境変数取得失敗
+/* エラーメッセージ */
+
+// EnvNotFoundError 環境変数存在なし
 type EnvNotFoundError struct {
 	Key string
 }
@@ -20,7 +22,7 @@ func (e *EnvNotFoundError) Code() string {
 // EnvConvertError 環境変数変換失敗
 type EnvConvertError struct {
 	Key       string
-	BeforeEnv interface{}
+	BeforeEnv string
 }
 
 // Error EnvConvertErrorのエラーメッセージ
@@ -81,18 +83,84 @@ func (e *NotFoundError) Code() string {
 	return CODE_E00005
 }
 
-// CreateError レコードなしエラー
-type CreateError struct {
+// DuplicateError レコードなしエラー
+type DuplicateError struct {
 	TableName string
-	Id        string
+	Key       string
 }
 
-// Error CreateErrorのエラーメッセージ
-func (e *CreateError) Error() string {
-	return fmt.Sprintf(MSG_E00006, e.TableName, e.Id)
+// Error DuplicateErrorのエラーメッセージ
+func (e *DuplicateError) Error() string {
+	return fmt.Sprintf(MSG_E00006, e.TableName, e.Key)
 }
 
-// Code CreateErrorのエラーコード
-func (e *CreateError) Code() string {
+// Code DuplicateErrorのエラーコード
+func (e *DuplicateError) Code() string {
 	return CODE_E00006
+}
+
+// DBConnectionOpenError DB接続エラー
+type DBConnectionOpenError struct {
+	Db      string
+	Address string
+	Port    string
+	Err     error
+}
+
+// Error DBConnectionOpenErrorのエラーメッセージ
+func (e *DBConnectionOpenError) Error() string {
+	return fmt.Sprintf(MSG_E00007, e.Db, e.Address, e.Port, e.Err)
+}
+
+// Code DBConnectionOpenErrorのエラーコード
+func (e *DBConnectionOpenError) Code() string {
+	return CODE_E00007
+}
+
+// ServeFatalError サーバー起動失敗
+type ServeFatalError struct {
+}
+
+// Error ServeFatalErrorのエラーメッセージ
+func (e *ServeFatalError) Error() string {
+	return MSG_E00008
+}
+
+// Code ServeFatalErrorのエラーコード
+func (e *ServeFatalError) Code() string {
+	return CODE_E00008
+}
+
+/* 警告メッセージ */
+// EnvNotFoundWarn 環境変数取得失敗
+type EnvNotFoundWarn struct {
+	Key          string
+	DefaultValue interface{}
+}
+
+// Error EnvNotFoundWarnのエラーメッセージ
+func (e *EnvNotFoundWarn) Error() string {
+	return fmt.Sprintf(MSG_W00001, e.Key, e.DefaultValue)
+}
+
+// Code EnvNotFoundWarnのエラーコード
+func (e *EnvNotFoundWarn) Code() string {
+	return CODE_W00002
+}
+
+// EnvConvertWarn 環境変数変換失敗
+type EnvConvertWarn struct {
+	Key          string
+	BeforeEnv    string
+	DefaultValue interface{}
+}
+
+// Error EnvConvertWarnのエラーメッセージ
+func (e *EnvConvertWarn) Error() string {
+	return fmt.Sprintf(MSG_W00002, e.Key, e.BeforeEnv, e.DefaultValue)
+}
+
+// Code EnvConvertWarnのエラーコード
+func (e *EnvConvertWarn) Code() string {
+	return CODE_W00002
 }

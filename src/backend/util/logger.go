@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"go.uber.org/zap"
@@ -26,14 +27,26 @@ func NewLogger() *Logger {
 	}
 }
 
-func (logger *Logger) Info(ctx context.Context, msg string) {
-	logger.zap.Info(msg, zap.String("SERVER_NAME", pomodork_constant.SERVER_NAME), zap.String("TRANSACTION_ID", ctx.Value(pomodork_constant.TRANSACTION_ID).(string)))
+func (logger *Logger) Info(ctx context.Context, code string, msg string) {
+	logger.zap.Info(msg,
+		zap.String("SERVER_NAME", pomodork_constant.SERVER_NAME),
+		zap.String("TRANSACTION_ID", fmt.Sprint(ctx.Value(pomodork_constant.TRANSACTION_ID))),
+		zap.String("CODE", code),
+	)
 }
 
-func (logger *Logger) Warn(ctx context.Context, msg string) {
-	logger.zap.Warn(msg, zap.String("SERVER_NAME", pomodork_constant.SERVER_NAME), zap.String("TRANSACTION_ID", ctx.Value(pomodork_constant.TRANSACTION_ID).(string)))
+func (logger *Logger) Warn(ctx context.Context, code string, msg string) {
+	logger.zap.Warn(msg,
+		zap.String("SERVER_NAME", pomodork_constant.SERVER_NAME),
+		zap.String("TRANSACTION_ID", fmt.Sprint(ctx.Value(pomodork_constant.TRANSACTION_ID))),
+		zap.String("CODE", code),
+	)
 }
 
-func (logger *Logger) Error(ctx context.Context, msg string) {
-	logger.zap.Error(msg, zap.String("SERVER_NAME", pomodork_constant.SERVER_NAME), zap.String("TRANSACTION_ID", ctx.Value(pomodork_constant.TRANSACTION_ID).(string)))
+func (logger *Logger) Error(ctx context.Context, code string, msg string) {
+	logger.zap.Error(msg,
+		zap.String("SERVER_NAME", pomodork_constant.SERVER_NAME),
+		zap.String("TRANSACTION_ID", fmt.Sprint(ctx.Value(pomodork_constant.TRANSACTION_ID))),
+		zap.String("CODE", code),
+	)
 }

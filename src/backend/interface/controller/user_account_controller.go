@@ -23,5 +23,9 @@ func NewUserAccountRepositories() *UserAccountRepositories {
 
 // CreateUser ユーザ作成
 func (u *UserAccountRepositories) CreateUser(ctx context.Context) (string, error) {
-	return u.UserAccountUseCase.CreateUser(ctx)
+	userId, err := u.UserAccountUseCase.CreateUser(ctx)
+	if err != nil {
+		return "", err
+	}
+	return userId, nil
 }

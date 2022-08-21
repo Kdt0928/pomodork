@@ -1,21 +1,26 @@
 package main
 
 import (
+	"context"
 	pomodork_constant "pomodork-backend/constant"
 	"pomodork-backend/infrastructure/gorm"
 	"pomodork-backend/infrastructure/openapi"
 	"pomodork-backend/interface/controller"
 	"pomodork-backend/interface/database"
+	pomodork_error "pomodork-backend/message/error"
 	"pomodork-backend/usecase"
 	pomodork_util "pomodork-backend/util"
 )
 
 func main() {
 
+	logger := pomodork_util.NewLogger()
+
 	// DB Connectionの生成
 	db, err := gorm.NewGormHandler()
 	if err != nil {
-		// TODO
+		serverFatalErr := pomodork_error.ServeFatalError{}
+		logger.Error(context.Background(), serverFatalErr.Code(), serverFatalErr.Error())
 		return
 	}
 	// SQLHandlerの生成
@@ -37,8 +42,10 @@ func main() {
 	gin := apis.NewRouter()
 
 	// PORTの取得
-	port, err := pomodork_util.GetEnv(pomodork_constant.SERVER_PORT, "string")
+	port, err := pomodork_util.GetRequiredEnv(pomodork_constant.SERVER_PORT, "string")
 	if err != nil {
+		serverFatalErr := pomodork_error.ServeFatalError{}
+		logger.Error(context.Background(), serverFatalErr.Code(), serverFatalErr.Error())
 		return
 	}
 	gin.Run(":" + port.(string))

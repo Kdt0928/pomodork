@@ -3,9 +3,11 @@ package database
 import "context"
 
 type SqlHandlerInterface interface {
-	GetMaxUserId(ctx context.Context, userAccount *UserAccount) error
-	UserCount(ctx context.Context, userAccount *UserAccount) (int64, error)
-	CreateUser(ctx context.Context, userAccount *UserAccount) error
+	Create(ctx context.Context, model interface{}) error
+	Find(ctx context.Context, model interface{}) error
+	Latest(ctx context.Context, model interface{}) error
+	Count(ctx context.Context, model interface{}) (int64, error)
+	SqlErrorConverter(error) error
 }
 
 type TransactionHandler interface {

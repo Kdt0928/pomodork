@@ -4,10 +4,8 @@ import (
 	"context"
 	pomodork_constant "pomodork-backend/constant"
 	"pomodork-backend/entities"
-	pomodork_error "pomodork-backend/message/error"
 	common "pomodork-backend/usecase/common"
 	"pomodork-backend/usecase/repository"
-	pomodork_util "pomodork-backend/util"
 )
 
 /*
@@ -43,35 +41,26 @@ func NewUserAccountRepositories() *UserAccountRepositories {
 
 // CreateUser ユーザ登録
 func (u *UserAccountRepositories) CreateUser(ctx context.Context) (string, error) {
-	logger := pomodork_util.NewLogger()
-
 	// ユーザアカウント存在チェック
 	userExists, err := u.UserAccountRepository.IsUserExists(ctx)
 	if err != nil {
-		existsErr := &pomodork_error.ExistsError{TableName: "ユーザアカウント", Conditions: ""}
-		logger.Error(ctx, existsErr.Error())
-		return "", existsErr
+		return "", err
 	}
 
 	userId := pomodork_constant.FIRST_USER_ID
-	if !userExists {
+	if userExists {
 		// ユーザID取得
 		previousUserId, err := u.UserAccountRepository.GetMaxUserId(ctx)
 		if err != nil {
-			notFoundErr := &pomodork_error.NotFoundError{TableName: "ユーザアカウント", Conditions: ""}
-			logger.Error(ctx, notFoundErr.Error())
-			return "", notFoundErr
+			return "", err
 		}
 		//　ユーザID発番
 		userId = common.CreateId(previousUserId)
 	}
 
 	// ユーザ登録
-	ctx = context.WithValue(ctx, pomodork_constant.USER_ID, userId)
 	err = u.UserAccountRepository.CreateUser(ctx, userId)
 	if err != nil {
-		createErr := pomodork_error.CreateError{TableName: "ユーザアカウント", Id: userId}
-		logger.Error(ctx, createErr.Error())
 		return "", err
 	}
 

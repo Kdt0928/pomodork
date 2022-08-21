@@ -14,6 +14,7 @@ import (
 	"net/http"
 	pomodork_constant "pomodork-backend/constant"
 	"pomodork-backend/interface/controller"
+	pomodork_error "pomodork-backend/message/error"
 
 	"github.com/gin-gonic/gin"
 )
@@ -41,8 +42,19 @@ func (u *UserControllerRepositories) UserCreate(c *gin.Context) {
 	ctx = context.WithValue(ctx, pomodork_constant.TRANSACTION_ID, c.Request.Header.Get(pomodork_constant.TRANSACTION_ID))
 	user_id, err := u.UserAccountController.CreateUser(ctx)
 	if err != nil {
-		// TODO エラーハンドリング
-		c.JSON(http.StatusOK, gin.H{})
+		var status int
+		var response interface{}
+		switch err.(type) {
+		case *pomodork_error.DuplicateError,
+			*pomodork_error.NotFoundError,
+			*pomodork_error.SQLExecError:
+			status = http.StatusInternalServerError
+			response = ErrorResponse{
+				ErrorCode:    "E50001",
+				ErrorMessage: "システムエラーが発生しました。",
+			}
+		}
+		c.JSON(status, response)
 	}
 
 	// 正常レスポンス
@@ -55,4 +67,13 @@ func (u *UserControllerRepositories) UserCreate(c *gin.Context) {
 // UserSearch - ユーザ取得
 func (u *UserControllerRepositories) UserSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
+}
+
+// ApiUserErrorConverter エラーレスポンス変換
+func ApiUserErrorConverter(err error) (int, ErrorResponse) {
+	switch err {
+	case &pomodork_error.ExistsError{}:
+		return http.StatusConflict, ErrorResponse{}
+	}
+	return http.StatusConflict, ErrorResponse{}
 }
