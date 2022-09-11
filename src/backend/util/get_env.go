@@ -42,7 +42,8 @@ func GetNonRequiredEnv(key string, envType string, defaultValue interface{}) (in
 	logger := NewLogger()
 
 	// 存在チェック
-	env := interface{}(os.Getenv(key))
+	var env interface{}
+	env = os.Getenv(key)
 	if env == "" {
 		err := &pomodork_error.EnvNotFoundWarn{Key: key, DefaultValue: defaultValue}
 		logger.Warn(context.Background(), err.Code(), err.Error())
@@ -53,10 +54,13 @@ func GetNonRequiredEnv(key string, envType string, defaultValue interface{}) (in
 	switch envType {
 	case "int":
 		// 型変換チェック
-		if intEnv, err := strconv.Atoi(env.(string)); err != nil {
+		intEnv, err := strconv.Atoi(env.(string))
+		if err != nil {
 			err := &pomodork_error.EnvConvertWarn{Key: key, BeforeEnv: env.(string), DefaultValue: defaultValue}
 			logger.Warn(context.Background(), err.Code(), err.Error())
 			// デフォルト値を設定
+			env = defaultValue
+		} else {
 			env = intEnv
 		}
 	}
