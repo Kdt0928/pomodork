@@ -22,3 +22,14 @@ type TransactionHandler interface {
 	// Commit() (interface{}, error)
 	// RollBack() (interface{}, error)
 }
+
+// SqlRepositories Interface層で利用するinfra層のInterface群
+type SqlRepositories struct {
+	SqlHandler SqlHandlerInterface
+}
+
+// NewSqlRepositories sqlRepositoriesの生成
+func NewSqlRepositories() *SqlRepositories {
+	sqlHandler := new(SqlRepositories)
+	return sqlHandler
+}

@@ -18,10 +18,10 @@ import (
 	・GetUserAccount ユーザアカウント取得
 */
 
-// UserAccountUseCaseInterface UseCaseのインターフェイス
-type UserAccountUseCaseInterface interface {
+// UserAccountDomain UseCaseのインターフェイス
+type UserAccountDomain interface {
 	CreateUser(ctx context.Context) (string, error)
-	GetUser(ctx context.Context, userId string) (entities.UserAccount, entities.Twitter)
+	GetUser(ctx context.Context, userId string) (entities.UserAccount, entities.Twitter, error)
 	DeleteUser(ctx context.Context, userId string) string
 	UpdateUserAccount(ctx context.Context, user entities.UserAccount) string
 	GetUserAccount(ctx context.Context, userId string) (entities.UserAccount, entities.Twitter)
@@ -68,8 +68,8 @@ func (u *UserAccountRepositories) CreateUser(ctx context.Context) (string, error
 }
 
 // GetUser ユーザ取得
-func (u *UserAccountRepositories) GetUser(ctx context.Context, userId string) (entities.UserAccount, entities.Twitter) {
-	return entities.UserAccount{}, entities.Twitter{}
+func (u *UserAccountRepositories) GetUser(ctx context.Context, userId string) (entities.UserAccount, entities.Twitter, error) {
+	return entities.UserAccount{}, entities.Twitter{}, nil
 }
 
 // DeleteUser ユーザ削除

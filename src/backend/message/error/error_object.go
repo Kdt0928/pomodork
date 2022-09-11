@@ -35,6 +35,37 @@ func (e *EnvConvertError) Code() string {
 	return CODE_E00002
 }
 
+// DBConnectError DB接続エラー
+type DBConnectError struct {
+	Host string
+	Db   string
+	Port string
+}
+
+// Error DBConnectErrorのエラーメッセージ
+func (e *DBConnectError) Error() string {
+	return fmt.Sprintf(MSG_E00003, e.Host, e.Db, e.Port)
+}
+
+// Code DBConnectErrorのエラーコード
+func (e *DBConnectError) Code() string {
+	return CODE_E00003
+}
+
+// ServeFatalError サーバー起動失敗
+type ServeFatalError struct {
+}
+
+// Error ServeFatalErrorのエラーメッセージ
+func (e *ServeFatalError) Error() string {
+	return MSG_E00004
+}
+
+// Code ServeFatalErrorのエラーコード
+func (e *ServeFatalError) Code() string {
+	return CODE_E00004
+}
+
 // SQLExecError SQL実行エラー
 type SQLExecError struct {
 	TableName string
@@ -43,28 +74,12 @@ type SQLExecError struct {
 
 // Error SQLExecErrorのエラーメッセージ
 func (e *SQLExecError) Error() string {
-	return fmt.Sprintf(MSG_E00003, e.TableName, e.Err)
+	return fmt.Sprintf(MSG_E10001, e.TableName, e.Err)
 }
 
 // Code SQLExecErrorのエラーコード
 func (e *SQLExecError) Code() string {
-	return CODE_E00003
-}
-
-// ExistsError 存在チェックエラー
-type ExistsError struct {
-	TableName  string
-	Conditions string
-}
-
-// Error ExistsErrorのエラーメッセージ
-func (e *ExistsError) Error() string {
-	return fmt.Sprintf(MSG_E00004, e.TableName, e.Conditions)
-}
-
-// Code ExistsErrorのエラーコード
-func (e *ExistsError) Code() string {
-	return CODE_E00004
+	return CODE_E10001
 }
 
 // NotFoundError レコードなしエラー
@@ -75,12 +90,12 @@ type NotFoundError struct {
 
 // Error NotFoundErrorのエラーメッセージ
 func (e *NotFoundError) Error() string {
-	return fmt.Sprintf(MSG_E00005, e.TableName, e.Conditions)
+	return fmt.Sprintf(MSG_E10002, e.TableName, e.Conditions)
 }
 
 // Code NotFoundErrorのエラーコード
 func (e *NotFoundError) Code() string {
-	return CODE_E00005
+	return CODE_E10002
 }
 
 // DuplicateError レコードなしエラー
@@ -91,44 +106,12 @@ type DuplicateError struct {
 
 // Error DuplicateErrorのエラーメッセージ
 func (e *DuplicateError) Error() string {
-	return fmt.Sprintf(MSG_E00006, e.TableName, e.Key)
+	return fmt.Sprintf(MSG_E10003, e.TableName, e.Key)
 }
 
 // Code DuplicateErrorのエラーコード
 func (e *DuplicateError) Code() string {
-	return CODE_E00006
-}
-
-// DBConnectionOpenError DB接続エラー
-type DBConnectionOpenError struct {
-	Db      string
-	Address string
-	Port    string
-	Err     error
-}
-
-// Error DBConnectionOpenErrorのエラーメッセージ
-func (e *DBConnectionOpenError) Error() string {
-	return fmt.Sprintf(MSG_E00007, e.Db, e.Address, e.Port, e.Err)
-}
-
-// Code DBConnectionOpenErrorのエラーコード
-func (e *DBConnectionOpenError) Code() string {
-	return CODE_E00007
-}
-
-// ServeFatalError サーバー起動失敗
-type ServeFatalError struct {
-}
-
-// Error ServeFatalErrorのエラーメッセージ
-func (e *ServeFatalError) Error() string {
-	return MSG_E00008
-}
-
-// Code ServeFatalErrorのエラーコード
-func (e *ServeFatalError) Code() string {
-	return CODE_E00008
+	return CODE_E10003
 }
 
 /* 警告メッセージ */

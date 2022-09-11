@@ -19,19 +19,8 @@ type UserAccount struct {
 	LastUpdateUser string
 }
 
-// UserAccountSqlHandlerRepositories Interface層で利用するinfra層のInterface群
-type UserAccountSqlHandlerRepositories struct {
-	SqlHandlerRepository SqlHandlerInterface
-}
-
-// NewUserAccountSqlHandlerRepositories UserAccountSqlHandlerRepositoriesの生成
-func NewUserAccountSqlHandlerRepositories() *UserAccountSqlHandlerRepositories {
-	sqlHandler := new(UserAccountSqlHandlerRepositories)
-	return sqlHandler
-}
-
 // CreateUser ユーザ作成
-func (handler *UserAccountSqlHandlerRepositories) CreateUser(ctx context.Context, userId string) error {
+func (u *SqlRepositories) CreateUser(ctx context.Context, userId string) error {
 	logger := pomodork_util.NewLogger()
 	userAccount := &UserAccount{
 		UserId:         userId,
@@ -39,11 +28,11 @@ func (handler *UserAccountSqlHandlerRepositories) CreateUser(ctx context.Context
 		LastUpdateUser: userId,
 	}
 
-	if err := handler.SqlHandlerRepository.Create(ctx, userAccount); err != nil {
+	if err := u.SqlHandler.Create(ctx, userAccount); err != nil {
 		sqlErr := &pomodork_error.SQLExecError{TableName: "ユーザアカウント", Err: err}
 		logger.Error(ctx, sqlErr.Code(), sqlErr.Error())
 
-		err := handler.SqlHandlerRepository.SqlErrorConverter(err)
+		err := u.SqlHandler.SqlErrorConverter(err)
 		SqlErrorHandler(ctx, "ユーザアカウント", err, userId)
 		return err
 	}
@@ -51,18 +40,18 @@ func (handler *UserAccountSqlHandlerRepositories) CreateUser(ctx context.Context
 }
 
 // IsUserExists ユーザ存在チェック
-func (handler *UserAccountSqlHandlerRepositories) IsUserExists(ctx context.Context) (bool, error) {
+func (u *SqlRepositories) IsUserExists(ctx context.Context) (bool, error) {
 	logger := pomodork_util.NewLogger()
 	userAccount := UserAccount{}
 	userExists := true
 
-	if count, err := handler.SqlHandlerRepository.Count(ctx, &userAccount); count == 0 || err != nil {
+	if count, err := u.SqlHandler.Count(ctx, &userAccount); count == 0 || err != nil {
 		userExists = false
 		if err != nil {
 			sqlErr := &pomodork_error.SQLExecError{TableName: "ユーザアカウント", Err: err}
 			logger.Error(ctx, sqlErr.Code(), sqlErr.Error())
 
-			err := handler.SqlHandlerRepository.SqlErrorConverter(err)
+			err := u.SqlHandler.SqlErrorConverter(err)
 			SqlErrorHandler(ctx, "ユーザアカウント", err, "")
 			return userExists, sqlErr
 		}
@@ -70,34 +59,34 @@ func (handler *UserAccountSqlHandlerRepositories) IsUserExists(ctx context.Conte
 	return userExists, nil
 }
 
-func (handler *UserAccountSqlHandlerRepositories) GetUser(ctx context.Context, userId string) (entities.UserAccount, string) {
+func (u *SqlRepositories) GetUser(ctx context.Context, userId string) (entities.UserAccount, string) {
 	return entities.UserAccount{}, ""
 }
 
 // GetMaxUserId 最新のユーザID取得
-func (handler *UserAccountSqlHandlerRepositories) GetMaxUserId(ctx context.Context) (string, error) {
+func (u *SqlRepositories) GetMaxUserId(ctx context.Context) (string, error) {
 	logger := pomodork_util.NewLogger()
 	userAccount := &UserAccount{}
 
-	if err := handler.SqlHandlerRepository.Latest(ctx, userAccount); err != nil {
+	if err := u.SqlHandler.Latest(ctx, userAccount); err != nil {
 		sqlErr := &pomodork_error.SQLExecError{TableName: "ユーザアカウント", Err: err}
 		logger.Error(ctx, sqlErr.Code(), sqlErr.Error())
 
-		err := handler.SqlHandlerRepository.SqlErrorConverter(err)
+		err := u.SqlHandler.SqlErrorConverter(err)
 		SqlErrorHandler(ctx, "ユーザアカウント", err, "")
 		return "", err
 	}
 	return userAccount.UserId, nil
 }
 
-func (handler *UserAccountSqlHandlerRepositories) DeleteUser(ctx context.Context, userId string) string {
+func (u *SqlRepositories) DeleteUser(ctx context.Context, userId string) string {
 	return ""
 }
 
-func (handler *UserAccountSqlHandlerRepositories) UpdateUserAccount(ctx context.Context, user entities.UserAccount) string {
+func (u *SqlRepositories) UpdateUserAccount(ctx context.Context, user entities.UserAccount) string {
 	return ""
 }
 
-func (handler *UserAccountSqlHandlerRepositories) GetUserAccount(ctx context.Context, userId string) (entities.UserAccount, string) {
+func (u *SqlRepositories) GetUserAccount(ctx context.Context, userId string) (entities.UserAccount, string) {
 	return entities.UserAccount{}, ""
 }

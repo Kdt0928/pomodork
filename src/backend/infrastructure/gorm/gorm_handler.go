@@ -16,18 +16,15 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// GormHandler GROMのラッパー
+// GormHandler Gormのハンドラー
 type GormHandler struct {
 	db *gorm.DB
 }
 
-// NewGormHandler gormHandlerの生成
+// NewGormHandler GormHandlerの生成
 func NewGormHandler() (*GormHandler, error) {
 
-	ctx := context.Background()
-
-	// dsnFormat := "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=%s"
-	dsnFormat := "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local" // TODO TimeZone
+	dsnFormat := "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local"
 
 	// DB接続情報取得
 	dbUser, err := pomodork_util.GetRequiredEnv(pomodork_constant.DB_USER, "string")
@@ -50,10 +47,6 @@ func NewGormHandler() (*GormHandler, error) {
 	if err != nil {
 		return nil, err
 	}
-	// dbTimeZone, err := pomodork_util.GetRequiredEnv(pomodork_constant.DB_TIMEZONE, "string")
-	// if err != nil {
-	// 	return nil, err
-	// }
 
 	// DBコネクション情報
 	maxOpenConn, err := pomodork_util.GetRequiredEnv(pomodork_constant.MAX_OPEN_CONNECTION, "int")
@@ -92,7 +85,6 @@ func NewGormHandler() (*GormHandler, error) {
 		},
 	)
 
-	// dsn := fmt.Sprintf(dsnFormat, dbUser, dbPassword, dbAddress, dbPort, dbName, dbTimeZone)
 	dsn := fmt.Sprintf(dsnFormat, dbUser, dbPassword, dbAddress, dbPort, dbName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:   newLogger,
@@ -100,13 +92,12 @@ func NewGormHandler() (*GormHandler, error) {
 	})
 	if err != nil {
 		logger := pomodork_util.NewLogger()
-		dbErr := &pomodork_error.DBConnectionOpenError{
-			Db:      dbName.(string),
-			Address: dbAddress.(string),
-			Port:    dbPort.(string),
-			Err:     err,
+		dbErr := &pomodork_error.DBConnectError{
+			Host: dbAddress.(string),
+			Db:   dbName.(string),
+			Port: dbPort.(string),
 		}
-		logger.Error(ctx, dbErr.Code(), dbErr.Error())
+		logger.Error(context.Background(), dbErr.Code(), dbErr.Error())
 		return nil, dbErr
 	}
 

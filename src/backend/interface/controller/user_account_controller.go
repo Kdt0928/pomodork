@@ -5,27 +5,42 @@ import (
 	"pomodork-backend/usecase"
 )
 
-// UserAccountControllerInterface Controllerのインターフェース
-type UserAccountControllerInterface interface {
+// User ユーザ情報
+type User struct {
+	UserId        string // ユーザID
+	MailAddress   string // メールアドレス
+	Password      string // パスワード
+	AccountName   string // アカウント名
+	TwitterLinkId string // Twitter連携ID
+}
+
+// UserAccountController Controllerのインターフェース
+type UserAccountController interface {
 	CreateUser(ctx context.Context) (string, error)
+	GetUser(ctx context.Context, userId string) (User, error)
 }
 
-// UserAccountRepositories UseCaseのインターフェース群
-type UserAccountRepositories struct {
-	UserAccountUseCase usecase.UserAccountUseCaseInterface
+// UserAccountDomains UseCaseのインターフェース群
+type UserAccountDomains struct {
+	Domain usecase.UserAccountDomain
 }
 
-// NewUserAccountRepositories UserAccountRepositoriesの生成
-func NewUserAccountRepositories() *UserAccountRepositories {
-	useCase := new(UserAccountRepositories)
+// NewUserAccountDomains UserAccountDomainsの生成
+func NewUserAccountRepositories() *UserAccountDomains {
+	useCase := new(UserAccountDomains)
 	return useCase
 }
 
 // CreateUser ユーザ作成
-func (u *UserAccountRepositories) CreateUser(ctx context.Context) (string, error) {
-	userId, err := u.UserAccountUseCase.CreateUser(ctx)
+func (u *UserAccountDomains) CreateUser(ctx context.Context) (string, error) {
+	userId, err := u.Domain.CreateUser(ctx)
 	if err != nil {
 		return "", err
 	}
 	return userId, nil
+}
+
+// GetUser ユーザ取得
+func (u *UserAccountDomains) GetUser(ctx context.Context, userId string) (User, error) {
+	return User{}, nil
 }
