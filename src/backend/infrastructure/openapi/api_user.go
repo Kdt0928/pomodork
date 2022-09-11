@@ -19,24 +19,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UserControllerRepositories Controllerのインターフェース群
-type UserControllerRepositories struct {
-	UserAccountController controller.UserAccountControllerInterface
+// UserRepositories Controllerのインターフェース群
+type UserRepositories struct {
+	UserAccountController controller.UserAccountController
 }
 
-// NewUserControllerRepositories UserControllerRepositoriesの生成
-func NewUserControllerRepositories() *UserControllerRepositories {
-	controller := new(UserControllerRepositories)
+// NewUserRepositories UserRepositoriesの生成
+func NewUserRepositories() *UserRepositories {
+	controller := new(UserRepositories)
 	return controller
 }
 
 // UserDelete - ユーザ削除
-func (u *UserControllerRepositories) UserDelete(c *gin.Context) {
+func (u *UserRepositories) UserDelete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
 // UserCreate - ユーザ登録
-func (u *UserControllerRepositories) UserCreate(c *gin.Context) {
+func (u *UserRepositories) UserCreate(c *gin.Context) {
 	// Controllerの呼び出し
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, pomodork_constant.TRANSACTION_ID, c.Request.Header.Get(pomodork_constant.TRANSACTION_ID))
@@ -65,15 +65,6 @@ func (u *UserControllerRepositories) UserCreate(c *gin.Context) {
 }
 
 // UserSearch - ユーザ取得
-func (u *UserControllerRepositories) UserSearch(c *gin.Context) {
+func (u *UserRepositories) UserSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
-}
-
-// ApiUserErrorConverter エラーレスポンス変換
-func ApiUserErrorConverter(err error) (int, ErrorResponse) {
-	switch err {
-	case &pomodork_error.ExistsError{}:
-		return http.StatusConflict, ErrorResponse{}
-	}
-	return http.StatusConflict, ErrorResponse{}
 }
