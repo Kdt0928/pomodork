@@ -1,0 +1,29 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${fileDirname}",
+            "env": {
+                "SERVER_PORT": "3000",
+                "DB_USER": "pomodork_dev",
+                "DB_PASSWORD": "developer",
+                "DB_ADDRESS": "localhost",
+                "DB_PORT": "3306",
+                "DB_NAME": "pomodork_db",
+                "DB_TIMEZONE": "Asia/Tokyo",
+                "MAX_OPEN_CONNECTION": "10",
+                "MAX_IDLE_CONNECTION": "10",
+                "MAX_LIFE_TIME": "60",
+                "DEBUG_MODE": "1",
+            },
+            "args": []
+        }
+    ]
+}
